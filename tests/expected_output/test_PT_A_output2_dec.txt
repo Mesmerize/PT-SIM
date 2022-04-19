@@ -1,0 +1,12 @@
+Welcome to PT-Sim-Clock, the enhanced page table simulator
+Using input file tests/PT_A.txt
+32012
+47665
+SEGFAULT
+26779
+SEGFAULT
+26838
+PAGEFAULT 24909
+44155
+65214
+39817

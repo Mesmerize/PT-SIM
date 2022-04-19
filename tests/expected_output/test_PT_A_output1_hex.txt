@@ -1,0 +1,12 @@
+Welcome to PT-Sim, the page table simulator
+Using input file tests/PT_A.txt
+0x7d0c
+0xba31
+SEGFAULT
+0x689b
+SEGFAULT
+0x68d6
+DISK
+0xac7b
+0xfebe
+0x9b89

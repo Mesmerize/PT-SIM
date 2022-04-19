@@ -1,0 +1,152 @@
+--------------------------------------------------------------------------
+
+            +-------------------------+
+            | CS 450                  |
+            | PROJECT: PT SIM         |
+            | DESIGN DOCUMENT         |
+            +-------------------------+
+
+---- GROUP ----
+
+>> Fill in the names and email addresses of your group members.
+
+FirstName LastName <email@domain.example>
+FirstName LastName <email@domain.example>
+
+---- PRELIMINARIES ----
+
+>> If you have any preliminary comments on your submission or
+>> bug notes, please give them here.
+
+>> Please cite any offline or online sources you consulted while
+>> preparing your submission, other than man pages, course
+>> text, lecture notes, and course staff.
+
+
+               PAGE TABLE SIMULATOR
+               ====================
+
+---- EXPLORE THE PROBLEM ----
+
+>> A1: Given the following description of a page table:
+>>
+>> 7 8 32
+>> 0 1 0 0
+>> 1 1 4 0
+>> 1 1 5 1
+>> 1 1 2 0
+>>
+>> Translate the following sequence of address requests using the method
+>> described for Part A.
+>>
+>> 0x05
+>> 0x7F
+>> 0x3B
+>> 0x7F
+>> 0x40
+>>
+
+>> A2: It is ok if your program just reads every row of the input file,
+>> but it is possible to compute how many rows you might expect.
+>> Show a computation to determine how many rows are in the page table
+>> using the first row of the input file shows above: 7 8 32
+
+
+---- DATA STRUCTURES ----
+
+>> A3: Copy here the declaration of each new or changed `struct',
+>> `struct' member, global or static variable, `typedef', or enumeration.
+>> Identify the purpose of each in 2--25 words.
+>> Recall the instructions required at least one data structure.
+
+---- FUNCTIONS ----
+
+>> A4: Provide a prototype and documentation for each function
+>> you have introduced to support this portion of the project.
+>> Use the Google Style Guide for function documentation.
+>> Recall the instructions required at least two functions
+>> in your project, and these should be reflected in A4 and/or B3.
+
+---- ALGORITHMS ----
+
+>> A5: Describe your general strategy for managing bit-wise
+>> transformations of data, and relevant support functions you used
+>> to accomplish this.
+
+
+
+
+               CLOCK REPLACEMENT SIMULATOR
+               ===========================
+
+---- EXPLORE THE PROBLEM ----
+
+>> B1: Given the following description of a page table:
+>>
+>> 7 8 32
+>> 0 1 0 0
+>> 1 1 4 0
+>> 1 1 5 1
+>> 1 1 2 0
+>>
+>> Translate the following sequence of address requests using the method
+>> described for Part B.
+>>
+>> 0x05
+>> 0x7F
+>> 0x3B
+>> 0x7F
+>> 0x40
+>>
+
+---- DATA STRUCTURES ----
+
+>> B2: Copy here the declaration of each new or changed `struct',
+>> `struct' member, global or static variable, `typedef', or enumeration.
+>> Identify the purpose of each in 2--25 words.
+>> Do not repeat anything already described in A3.
+
+---- FUNCTIONS ----
+
+>> B3: Provide a prototype and documentation for each function
+>> you have introduced to support this portion of the project.
+>> Use the Google Style Guide for function documentation.
+>> Do not repeat anything already described in A4.
+
+---- ALGORITHMS ----
+
+>> B4: Describe (i) the data structure you used to search through the frames
+>> following the clock rotation, and (ii) reason through the number of bits 
+>> you would need if you were using a space-efficient representation 
+>> (in particular, describe how might implement a row of the table in C).
+
+---- RATIONALE ----
+
+>> B5: Did you need to handle any ambiguous scenarios or corner cases
+>> for the Clock algorithm, left unspecified in the algorithm's
+>> description? For example. how does your program behave when 
+>> there is a page table and no valid entries to evict?
+>> Explain any judgements you used in implementing
+>> unclear or unspecified behavior.
+
+
+               SURVEY QUESTIONS
+               ================
+
+Answering these questions is optional, but it will help us improve the
+course in future quarters.  Feel free to tell us anything you
+want--these questions are just to spur your thoughts.  You may also
+choose to respond anonymously in the course evaluations at the end of
+the quarter.
+
+>> In your opinion, was this assignment, or any one of the problems
+>> in it, too easy or too hard?  Did it take too long or too little time?
+
+>> Did you find that working on a particular part of the assignment gave
+>> you greater insight into some aspect of OS design?
+
+>> Is there some particular fact or hint we should give students in
+>> future quarters to help them solve the problems?  Conversely, did you
+>> find any of our guidance to be misleading?
+
+>> Any other comments?
