@@ -16,6 +16,24 @@
 # by the C standard.
 import getopt, sys, math
 
+#------------------------------------------------------#
+
+#-------------------- Background on Input file ---------------------#
+# pages[0] gives three values:  N M SIZE                            #
+# N(virtN) is the number of bits in the virtual address             #
+# M(physM) is the number of bits in the physical address            #
+# SIZE(pageSize) is the size of a page in bytes                     #
+#                                                                   #
+# page[row][i] are each a single row of the page table:  V P F U    #
+# V is an ASCII char (1/0) representing if the page is valid or not #
+# (1 indicates the page is in memory)                               #
+# P is an ASCII char (0–7) representing the access permissions      #
+# (0 means no access, anything else is permitted                    #
+# F is the frame number                                             #
+# U is an ASCII char (1/0) representing if the page has been        #
+# recently used (this can be ignored for Part A)                    #
+#-------------------------------------------------------------------#
+
 #--------------------------------------------------------------#
 #               Class to handle table elements                 #
 #--------------------------------------------------------------#
@@ -63,7 +81,7 @@ class PageTable:
 
 #------------- End of Class Initialization -------------#
 
-#------------- Start of Getter Functions -------------#
+#-------------- Start of Getter Functions --------------#
 def printData(self):
     print("Virtual Address Size: ", self.virtN)
     print("Physical Address Size: ", self.physM)
