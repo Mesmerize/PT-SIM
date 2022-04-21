@@ -81,40 +81,324 @@ class PageTable:
 
 #------------- End of Class Initialization -------------#
 
-#-------------- Start of Getter Functions --------------#
-def printData(self):
-    print("Virtual Address Size: ", self.virtN)
-    print("Physical Address Size: ", self.physM)
-    print("Page Size: ", self.pageSize)
+    #-------------- Start of Getter Functions --------------#
+    def printData(self):
+        print("Virtual Address Size: ", self.virtN)
+        print("Physical Address Size: ", self.physM)
+        print("Page Size: ", self.pageSize)
 
-def printPages(self):
-    print(self.virtN, " ", self.physM, " ", self.pageSize)
-    for i in self.pages:
-        print(i)
+    def printPages(self):
+        print(self.virtN, " ", self.physM, " ", self.pageSize)
+        for i in self.pages:
+            print(i)
 
-def fetchPages(self):
-    return self.pages
+    def fetchPages(self):
+        return self.pages
 
-def fetchVirtualSize(self):
-    return self.virtN
+    def fetchVirtualSize(self):
+        return self.virtN
 
-def fetchPhysicalSize(self):
-    return self.physM
+    def fetchPhysicalSize(self):
+        return self.physM
 
-def fetchPageSize(self):
-    return self.pageSize
+    def fetchPageSize(self):
+        return self.pageSize
 
-def fetchValidPage(self, row):
-    return self.pages[row][0]
+    def fetchValidPage(self, row):
+        return self.pages[row][0]
 
-def fetchAccessBit(self, row):
-    decToBin = dec2bin(int(self.pages[row][1])) # Converts curr decimal to 10 bit binary
-    return decToBin
+    def fetchAccessBit(self, row):
+        decToBin = dec2bin(int(self.pages[row][1])) # Converts curr decimal to 10 bit binary
+        return decToBin
 
-def fetchFrameNumber(self, row):
-    return self.pages[row][2]
+    def fetchFrameNumber(self, row):
+        return self.pages[row][2]
 
-def fetchRecentlyUsed(self, row):
-    return self.pages[row][3]
+    def fetchRecentlyUsed(self, row):
+        return self.pages[row][3]
 
-#------------- End of Getter Functions -------------#
+    #------------- End of Getter Functions -------------#
+
+#--------------------------------------------------------------#
+#               Usage Function for help info                   #
+#--------------------------------------------------------------#
+def usage():
+    print("Usage:\n\n")
+    print("--help: Provides usage information for both commands and arguments")
+    print("--verbose: Provides information about what is being outputted")
+    print("--test: Allows for tests to type conversion (e.g decimal to hex)")
+    print("-c: sets clock flag to True")
+
+#--------------------------------------------------------------#
+#               Argument Checking Function                     #
+#--------------------------------------------------------------#
+def validArgs(argv):
+    try:
+        # Parses command line options and parameter list
+        options, arguments = getopt.getopt(argv, 'c', ['help', 'test', 'verbose'])
+    
+    # Thrown when unrecognized option is entered
+    except getopt.GetoptError as err:
+        print(err)
+        sys.exit(2)
+
+    flags = [False, False, False]   # Flag Array to handle parameters
+
+    for opt, arg in options:
+        if opt in ['--help']:
+            usage()
+
+        elif opt in ['--verbose']:
+            flags[0] = True
+
+        elif opt in ['--test']:
+            flags[1] = True
+
+        elif opt in ['c']:
+            flags[2] = True
+
+    return flags
+
+#--------------------------------------------------------------#
+#               Test Flag Function                             #
+# (Called when test flag is set to true to do num conversion)  #
+#--------------------------------------------------------------#
+
+def test():
+
+    def info():
+        print("Enter 'exit' to terminate testing mode / program")
+        print("Additional info for testing mode \n type 'info'")
+        return
+
+    info()
+
+    h = False
+    dec = False
+
+    while True:
+        userInput = input()
+
+        if userInput.lower() == "exit":
+            print("Exiting testing mode and program...")
+
+        if userInput.lower() == "info":
+            info()
+
+        if h:
+            print("Binary: ", hex2bin(userInput))
+            print("Decimal: ", hex2dec(userInput))
+            print("Binary back to Hexidecimal: ", bin2hex(userInput))
+
+        elif dec:
+            print("Binary: ", dec2bin(userInput))
+            print("Decimal: ", dec2hex(userInput))
+            print("Binary back to Decimal: ", bin2hex(userInput))
+
+#--------- Start of Number Check and Coversion Functions (Hex/Dec/Bin) ---------#
+
+def checkNum(num):
+
+    if num[:2] == "0x":
+        h = "hex"
+        return h
+
+    else:
+        d = "dec"
+        return d
+
+def hex2dec(n):
+    return int(n, 16)
+    
+def dec2hex(n):
+    n = int(n, base=10)
+    return hex(n)
+    
+def hex2bin(n):
+    n = int(n, base=16)
+    return bin(n)
+
+def bin2hex(n):
+    n = int(n, base=2)
+    return hex(n)
+
+def bin2dec(n):
+    n = int(n, base=2)
+    return int(n)
+
+def dec2bin(n):
+    n = bin(int(n))
+    return n[2:]
+
+#--------- End of Number Check and Coversion Functions (Hex/Dec/Bin) ---------#
+
+#--------------------------------------------------------------#
+#                   Valid Page Function                        #
+#        (Validates if address is in page table)               #
+#--------------------------------------------------------------#
+
+def valPage(virtN, physM):
+    if type(virtN) == int:
+        virtN = str(virtN)
+    if '0' in virtN:
+        if physM != 0:
+            return "DISK"
+        else:
+            return "SEGFAULT"
+    else:
+        return False
+
+#--------------------------------------------------------------#
+#              Virt to Phys Address Function                   #
+#        (Translates Virtual Address to Physical Address       #
+#        Using the Clock Algorithm                     )       #
+#--------------------------------------------------------------#
+
+def clockVirt2Phys(pageTable, virtualAddr):
+    numberType = checkNum(virtualAddr)
+    pageSize = pageTable.fetchPageSize()
+    virtualSize = pageTable.fetchVirtualSize()
+    indxSize = int(virtualSize - math.log(pageTable.pageSize, 2))
+    numPages = math.log(pageTable.pageSize, 2)
+    pageFault = "PAGEFAULT"
+
+    # Hex to Binary Conversion
+    if numberType == "hex":
+        virtualBinary = hex2bin(virtualAddr)[2:]
+        if len(virtualBinary) < virtualSize:   
+            while len(virtualBinary) < virtualSize: # Adds 0's in front of string
+                virtualBinary = "0" + virtualBinary
+        append = virtualBinary[indxSize:]   # Virt Offset
+        pageTableIndex = virtualBinary[:indxSize]   # Page
+
+    # Decimal to Binary Conversion
+    else:
+        virtualBinary = hex2bin(dec2hex(virtualAddr))[2:]
+        if len(virtualBinary) < virtualSize:
+            while len(virtualBinary) < virtualSize:
+                virtualBinary = "0" + virtualBinary
+        append = virtualBinary[indxSize:]   # Virt Offset
+        pageTableIndex = virtualBinary[:indxSize]   # Page  
+
+    # Valid Index checking
+    if pageTable.pages[pageTable.ptr][0] == 1:
+        return virt2phys(pageTable, virtualAddr)
+
+    # Checking and Updating Table
+    for i in range(pageTable.ptr+1, int(numPages)-1):
+
+        if int(pageTable.pages[i][3]) == 0:
+            pageTable.pages[i][0] = 0 # update valid inex
+            pageTable.pages[pageTable.ptr][0] = 1 # update valid pointer
+            pageTable.pages[pageTable.ptr][2] = pageTable.pages[i][2] # update frame ptr
+            pageTable.pages[pageTable.ptr][3] = 1
+
+            pageTable.ptr += 1
+
+            if(pageTable.ptr > numPages):
+                for i in range(pageTable.ptr - 1):
+                    if pageTable.pages[i][0]:
+                        pageTable.ptr = i
+            return "PAGEFAULT"
+
+        else:
+            pageTable.ptr += 1
+            
+            if(pageTable.ptr > numPages):
+                for i in range(pageTable.ptr - 1):
+                    if pageTable.pages[i][0]:
+                        pageTable.ptr = i
+            return virt2phys(pageTable, virtualAddr)
+
+#--------------------------------------------------------------#
+#                 Virt to Phys Address Function                #
+#--------------------------------------------------------------#
+
+def virt2phys(pageTable, virtualAddr):
+    numberType = checkNum(virtualAddr)
+    # print("Type: ",numberType)
+    pageSize = pageTable.fetchPageSize()
+    virtualSize = pageTable.fetchVirtualSize()
+    indxSize = int(virtualSize - math.log(pageTable.pageSize, 2))
+
+    # Hex to Binary Conversion
+    if numberType == "hex":
+        virtualBinary = hex2bin(virtualAddr)[2:]
+        if len(virtualBinary) < virtualSize:   
+            while len(virtualBinary) < virtualSize: # Adds 0's in front of string
+                virtualBinary = "0" + virtualBinary
+        append = virtualBinary[indxSize:]   # Virt Offset
+        pageTableIndex = virtualBinary[:indxSize]   # Page
+
+    # Decimal to Binary Conversion
+    else:
+        virtualBinary = hex2bin(dec2hex(virtualAddr))[2:]
+        if len(virtualBinary) < virtualSize:
+            while len(virtualBinary) < virtualSize:
+                virtualBinary = "0" + virtualBinary
+        append = virtualBinary[indxSize:]   # Virt Offset
+        pageTableIndex = virtualBinary[:indxSize]   # Page  
+
+    indx = bin2dec(pageTableIndex)  # Page in Decimal
+    physMBit = bin2dec(pageTable.fetchAccessBit(indx))    # Permission Bit
+    frameToBin = hex2bin(dec2hex(pageTable.fetchFrameNumber(indx))) # Frame to Binary
+    virtNBit = pageTable.fetchValidPage(indx)
+
+    valid = valPage(virtNBit, physMBit)
+
+    if valid:
+        return valid
+    
+    virt2phy = frameToBin + append # Frame + Offset
+
+    # Translating Virt Address to Phys Address in type of Int
+    if numberType == "hex":
+        phys = bin2hex(virt2phy)
+    else:
+        phys = bin2dec(virt2phy)
+    return phys
+
+def readIn(flags, pageTable):
+
+    print("Type 'quit' to terminate program")
+
+    if(flags[2]):
+        for line in sys.stdin:
+            if line.lower() == 'quit':
+                return
+            clockAlg = clockVirt2Phys(pageTable, line)
+            print(clockAlg)
+    else:
+        for line in sys.stdin:
+            if line.lower() == 'quit':
+                return
+            phys = virt2phys(pageTable, line)
+            print(phys)
+    return
+
+#--------------------------------------------------------------#
+#                 Main Function                                #
+#--------------------------------------------------------------#
+
+def main(argv):
+    # flags[0] = verbose, flgas[1] = test, flags[2] = c
+
+    flags = validArgs(argv)
+
+    infile = argv[-1]
+
+    if flags[0]: 
+        print('inFile: ', infile)
+        print("Reading in file....")
+
+    pageTable = PageTable(infile)
+    # pageTable.printPages()
+    # pageTable.printData()
+
+    readIn(flags, pageTable)
+    print("Terminating Program....")
+
+    return
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
